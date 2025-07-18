@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pembelajaran Konfigurasi GPON</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #2c3e50, #1a2980);
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+            border-bottom: 5px solid #3498db;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #3498db, #2ecc71);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #ecf0f1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .content-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+        
+        .script-section {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            margin: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .explanation-section {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+            margin: 10px;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #3498db;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            background: #3498db;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .script-container {
+            background: #2c3e50;
+            color: #ecf0f1;
+            border-radius: 10px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            overflow-x: auto;
+            max-height: 600px;
+            overflow-y: auto;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .command {
+            margin: 8px 0;
+            padding-left: 15px;
+            position: relative;
+        }
+        
+        .command:before {
+            content: ">";
+            position: absolute;
+            left: 0;
+            color: #3498db;
+        }
+        
+        .comment {
+            color: #95a5a6;
+            font-style: italic;
+            margin: 15px 0;
+            padding-left: 15px;
+            border-left: 2px solid #3498db;
+        }
+        
+        .registration { color: #3498db; }
+        .basic-config { color: #2ecc71; }
+        .bandwidth { color: #9b59b6; }
+        .vlan { color: #1abc9c; }
+        .core-services { color: #f1c40f; }
+        .pppoe { color: #e74c3c; }
+        .lan-ports { color: #e67e22; }
+        .security { color: #d35400; }
+        .save { color: #27ae60; }
+        
+        .explanation-box {
+            background: #f0f7ff;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid #3498db;
+            transition: transform 0.3s ease;
+        }
+        
+        .explanation-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .explanation-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .explanation-title i {
+            color: #3498db;
+            font-size: 1.5rem;
+        }
+        
+        .explanation-content {
+            line-height: 1.8;
+            color: #34495e;
+        }
+        
+        .explanation-content ul {
+            padding-left: 20px;
+            margin: 15px 0;
+        }
+        
+        .explanation-content li {
+            margin-bottom: 10px;
+            position: relative;
+            padding-left: 25px;
+        }
+        
+        .explanation-content li:before {
+            content: "•";
+            color: #3498db;
+            font-size: 1.5rem;
+            position: absolute;
+            left: 0;
+            top: -5px;
+        }
+        
+        .highlight {
+            background: #fffacd;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+        
+        .function-diagram {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .diagram-title {
+            font-size: 1.5rem;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        
+        .flow-steps {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+        }
+        
+        .step {
+            background: #3498db;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            width: 80%;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .step:after {
+            content: "↓";
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2rem;
+            color: #3498db;
+        }
+        
+        .step:last-child:after {
+            display: none;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px;
+            background: #2c3e50;
+            color: #ecf0f1;
+            margin-top: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .content-wrapper {
+                flex-direction: column;
+            }
+            
+            .script-section, .explanation-section {
+                margin: 10px 0;
+            }
+            
+            .step {
+                width: 95%;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-network-wired"></i> Pembelajaran Konfigurasi GPON</h1>
+            <p class="subtitle">Memahami Script Konfigurasi dan Fungsinya untuk Perangkat ZTE-F670-L</p>
+        </header>
+        
+        <div class="content-wrapper">
+            <div class="script-section">
+                <h2 class="section-title"><i class="fas fa-code"></i> Script Konfigurasi Lengkap</h2>
+                <div class="script-container">
+                    <div class="comment"># Registrasi Perangkat ONU</div>
+                    <div class="command registration">configure terminal</div>
+                    <div class="command registration">interface gpon-olt_1/1/13</div>
+                    <div class="command registration">onu 10 type ZTE-F670-L sn ZTEGD3611357</div>
+                    <div class="command registration">!</div>
+                    
+                    <div class="comment"># Konfigurasi Dasar ONU</div>
+                    <div class="command basic-config">interface gpon-onu_1/1/13:10</div>
+                    <div class="command basic-config">name 2025-KUDA</div>
+                    <div class="command basic-config">description OLT-JUNGGO</div>
+                    
+                    <div class="comment"># Manajemen Bandwidth</div>
+                    <div class="command bandwidth">tcont 1 name PPPoE profile GARUDAHOME-1G-UP</div>
+                    <div class="command bandwidth">gemport 1 name Internet tcont 1</div>
+                    <div class="command bandwidth">gemport 1 traffic-limit downstream GARUDAHOME-1G-DOWN</div>
+                    
+                    <div class="comment"># Konfigurasi VLAN</div>
+                    <div class="command vlan">service-port 1 vport 1 user-vlan 140 vlan 140</div>
+                    <div class="command vlan">!</div>
+                    
+                    <div class="comment"># Layanan Inti</div>
+                    <div class="command core-services">pon-onu-mng gpon-onu_1/1/13:10</div>
+                    <div class="command core-services">flow mode 1 tag-filter vlan-filter untag-filter discard</div>
+                    <div class="command core-services">flow 1 pri 0 vlan 140</div>
+                    <div class="command core-services">gemport 1 flow 1</div>
+                    <div class="command core-services">switchport-bind switch_0/1 iphost 1</div>
+                    <div class="command core-services">ip-host 1 primary-dns 8.8.8.8 second-dns 8.8.4.4</div>
+                    
+                    <div class="comment"># Autentikasi PPPoE</div>
+                    <div class="command pppoe">pppoe 1 nat enable user 2025-KUDA password GMT24JBG</div>
+                    <div class="command pppoe">vlan-filter-mode iphost 1 tag-filter vlan-filter untag-filter discard</div>
+                    <div class="command pppoe">vlan-filter iphost 1 pri 0 vlan 140</div>
+                    
+                    <div class="comment"># Konfigurasi Port LAN</div>
+                    <div class="command lan-ports">dhcp-ip ethuni eth_0/1 from-onu</div>
+                    <div class="command lan-ports">dhcp-ip ethuni eth_0/2 from-onu</div>
+                    <div class="command lan-ports">dhcp-ip ethuni eth_0/3 from-onu</div>
+                    <div class="command lan-ports">dhcp-ip ethuni eth_0/4 from-onu</div>
+                    <div class="command lan-ports">interface eth eth_0/1 state unlock</div>
+                    <div class="command lan-ports">interface eth eth_0/2 state unlock</div>
+                    <div class="command lan-ports">interface eth eth_0/3 state unlock</div>
+                    <div class="command lan-ports">interface eth eth_0/4 state unlock</div>
+                    
+                    <div class="comment"># Keamanan</div>
+                    <div class="command security">security-mgmt 1 state enable mode forward protocol web</div>
+                    <div class="command security">!</div>
+                    
+                    <div class="comment"># Simpan Konfigurasi</div>
+                    <div class="command save">exit</div>
+                    <div class="command save">wr</div>
+                </div>
+            </div>
+            
+            <div class="explanation-section">
+                <h2 class="section-title"><i class="fas fa-book"></i> Penjelasan Fungsional</h2>
+                
+                <div class="explanation-box">
+                    <h3 class="explanation-title"><i class="fas fa-microchip"></i> Registrasi Perangkat</h3>
+                    <div class="explanation-content">
+                        <p>Bagian ini mendaftarkan ONU ke OLT (Optical Line Terminal):</p>
+                        <ul>
+                            <li><span class="highlight">interface gpon-olt_1/1/13</span> - Memilih port GPON di OLT</li>
+                            <li><span class="highlight">onu 10 type ZTE-F670-L sn ZTEGD3611357</span> - Mendaftarkan ONU dengan nomor 10, tipe ZTE-F670-L, dan serial number spesifik</li>
+                            <li>Fungsi utama: Membuat hubungan fisik antara OLT dan ONU pelanggan</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="explanation-box">
+                    <h3 class="explanation-title"><i class="fas fa-cog"></i> Konfigurasi Dasar</h3>
+                    <div class="explanation-content">
+                        <p>Memberikan identitas pada perangkat:</p>
+                        <ul>
+                            <li><span class="highlight">interface gpon-onu_1/1/13:10</span> - Memilih interface ONU yang sudah terdaftar</li>
+                            <li><span class="highlight">name 2025-KUDA</span> - Memberi nama perangkat sesuai pelanggan</li>
+                            <li><span class="highlight">description OLT-JUNGGO</span> - Deskripsi lokasi perangkat</li>
+                            <li>Fungsi: Memudahkan identifikasi perangkat dalam jaringan</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="explanation-box">
+                    <h3 class="explanation-title"><i class="fas fa-tachometer-alt"></i> Manajemen Bandwidth</h3>
+                    <div class="explanation-content">
+                        <p>Mengatur alokasi bandwidth untuk layanan:</p>
+                        <ul>
+                            <li><span class="highlight">tcont 1 name PPPoE profile GARUDAHOME-1G-UP</span> - Mengatur upstream bandwidth (dari pelanggan ke ISP)</li>
+                            <li><span class="highlight">gemport 1 name Internet tcont 1</span> - Membuat gateway untuk layanan internet</li>
+                            <li><span class="highlight">gemport 1 traffic-limit downstream GARUDAHOME-1G-DOWN</span> - Mengatur downstream bandwidth (dari ISP ke pelanggan)</li>
+                            <li>Fungsi: Menjamin kualitas layanan dengan mengontrol alokasi bandwidth</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="explanation-box">
+                    <h3 class="explanation-title"><i class="fas fa-project-diagram"></i> Konfigurasi VLAN</h3>
+                    <div class="explanation-content">
+                        <p>Mengisolasi traffic pelanggan menggunakan VLAN:</p>
+                        <ul>
+                            <li><span class="highlight">service-port 1 vport 1 user-vlan 140 vlan 140</span> - Membuat layanan pada VLAN 140</li>
+                            <li>Fungsi: Mengisolasi traffic pelanggan dari pelanggan lain dalam jaringan yang sama</li>
+                            <li>VLAN 140 biasanya digunakan khusus untuk layanan internet</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="explanation-box">
+                    <h3 class="explanation-title"><i class="fas fa-server"></i> Layanan Inti</h3>
+                    <div class="explanation-content">
+                        <p>Konfigurasi inti untuk operasional layanan:</p>
+                        <ul>
+                            <li><span class="highlight">flow mode 1 tag-filter vlan-filter untag-filter discard</span> - Mengatur mode filtering VLAN</li>
+                            <li><span class="highlight">switchport-bind switch_0/1 iphost 1</span> - Menghubungkan ke sistem jaringan</li>
+                            <li><span class="highlight">ip-host 1 primary-dns 8.8.8.8 second-dns 8.8.4.4</span> - Mengatur DNS server (Google DNS)</li>
+                            <li>Fungsi: Membangun konektivitas jaringan dasar untuk layanan</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="explanation-box">
+                    <h3 class="explanation-title"><i class="fas fa-user-lock"></i> Autentikasi PPPoE</h3>
+                    <div class="explanation-content">
+                        <p>Proses koneksi ke ISP:</p>
+                        <ul>
+                            <li><span class="highlight">pppoe 1 nat enable user 2025-KUDA password GMT24JBG</span> - Autentikasi dengan username dan password</li>
+                            <li><span class="highlight">nat enable</span> - Mengaktifkan Network Address Translation</li>
+                            <li>Fungsi: Menghubungkan perangkat ke jaringan ISP dan mengaktifkan fitur NAT untuk berbagi koneksi</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="explanation-box">
+                    <h3 class="explanation-title"><i class="fas fa-ethernet"></i> Port LAN</h3>
+                    <div class="explanation-content">
+                        <p>Konfigurasi port fisik perangkat:</p>
+                        <ul>
+                            <li><span class="highlight">dhcp-ip ethuni eth_0/1 from-onu</span> - Mengaktifkan DHCP client pada port 1</li>
+                            <li><span class="highlight">interface eth eth_0/1 state unlock</span> - Mengaktifkan port 1</li>
+                            <li>Konfigurasi diulang untuk port 2, 3, dan 4</li>
+                            <li>Fungsi: Mengaktifkan port fisik untuk koneksi perangkat end-user</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="function-diagram">
+                    <h3 class="diagram-title">Alur Kerja Konfigurasi GPON</h3>
+                    <div class="flow-steps">
+                        <div class="step">Registrasi Perangkat di OLT</div>
+                        <div class="step">Konfigurasi Identitas ONU</div>
+                        <div class="step">Alokasi Bandwidth</div>
+                        <div class="step">Isolasi VLAN</div>
+                        <div class="step">Autentikasi ke ISP</div>
+                        <div class="step">Aktivasi Port Pelanggan</div>
+                        <div class="step">Layanan Internet Aktif</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Pembelajaran Konfigurasi GPON &copy; 2023 | Sumber: Dokumentasi Teknis ZTE-F670-L</p>
+            <p>Desain untuk tujuan edukasi dan pemahaman teknis</p>
+        </footer>
+    </div>
+</body>
+</html>
